@@ -4,7 +4,12 @@
  */
 package org.penya.webauthn.backendauth.auth.boundary;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
 import java.io.Serializable;
 
 /**
@@ -15,5 +20,7 @@ import java.io.Serializable;
 public class AutenticacionEndpoint implements Serializable {
     //TODO: CREAR LOS METODOS PARA LOGIN
     // https://developer.okta.com/blog/2022/04/26/webauthn-java#authentication-controllers
+    
+   
 
 }

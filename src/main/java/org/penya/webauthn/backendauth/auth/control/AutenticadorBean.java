@@ -28,6 +28,17 @@ public class AutenticadorBean implements Serializable {
     @PersistenceContext(unitName = "BackendAuth-PU")
     EntityManager em;
 
+    public void guardar(Autenticador a) {
+        if (a != null) {
+            if (em != null) {
+                em.persist(a);
+                return;
+            }
+            throw new IllegalStateException();
+        }
+        throw new IllegalArgumentException();
+    }
+
     public List<Autenticador> findByIdentificadorCredencial(ByteArray identificadorCredencial, int first, int pageSize) {
         if (identificadorCredencial != null) {
             if (em != null) {

@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <jakartaee>10.0.0</jakartaee>
-        <microprofile.version>3.2</microprofile.version>
+        <microprofile.version>5.0</microprofile.version>
     </properties>
     
     <dependencies>
@@ -42,6 +42,12 @@
             <artifactId>jackson-core</artifactId>
             <version>2.15.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>13.0.0</version>
+            <classifier>jakarta</classifier>
         </dependency>
     </dependencies>
     

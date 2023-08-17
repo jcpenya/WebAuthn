@@ -37,10 +37,15 @@ document.addEventListener("submit", (e) => {
         const form = document.getElementById("form");
         const formData = new FormData(form);
         formData.append("credential", JSON.stringify(encodedResult));
-        return fetch("/finishauth", {
+        
+        const data=new URLSearchParams();
+        for(const pair of formData){
+            data.append(pair[0],pair[1]);
+        }
+        return fetch("/BackendAuth/resources/registro/finalizar/", {
             method: 'POST',
-            body: formData
-        })
+            body: data
+        });
     })
     .then((response) => {
         followRedirect(response);
