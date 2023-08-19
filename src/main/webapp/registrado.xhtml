@@ -8,7 +8,6 @@
     </h:head>
     <h:body>
         <h:panelGroup>
-
             <h:panelGrid>
                 <h1>Bienvenido <h:outputText value="#{frmRegistrado.usuario.nombre}"/></h1>
                 <h2>Autenticadores registrados</h2>
@@ -21,6 +20,9 @@
                             <h:outputText value="#{a.cuenta} #{a.cuenta gt 1 ?'veces':'vez'}"/>
                         </p:column>
                     </p:dataTable>
+                </h:form>
+                <h:form>
+                    <h:commandButton value="Salir" actionListener="#{frmRegistrado.logout}"/>
                 </h:form>
             </h:panelGrid>
         </h:panelGroup>

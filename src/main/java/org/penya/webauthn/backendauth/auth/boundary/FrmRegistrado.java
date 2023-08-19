@@ -6,6 +6,7 @@ package org.penya.webauthn.backendauth.auth.boundary;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ActionEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -66,6 +67,19 @@ public class FrmRegistrado implements Serializable {
 
     public boolean getPoseeAutenticadores() {
         return this.usuario != null && this.usuario.getAutenticadorList() != null && !this.usuario.getAutenticadorList().isEmpty();
+    }
+
+    public void logout(ActionEvent ae) {
+        this.request = (HttpServletRequest) fc.getExternalContext().getRequest();
+        if (request.getSession() != null && request.getSession().getAttribute("usuario") != null) {
+            request.getSession().invalidate();
+        }
+        try {
+            fc.getExternalContext().redirect("./index.html");
+        } catch (IOException ex) {
+            Logger.getLogger(FrmRegistrado.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
 }
