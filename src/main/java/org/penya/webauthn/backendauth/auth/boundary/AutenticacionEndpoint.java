@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import org.penya.webauthn.backendauth.auth.control.AutenticadorBean;
 import org.penya.webauthn.backendauth.auth.control.RelyingPartySupplier;
 import org.penya.webauthn.backendauth.auth.control.UsuarioBean;
+import org.penya.webauthn.backendauth.auth.entity.Autenticador;
 import org.penya.webauthn.backendauth.auth.entity.Usuario;
 
 /**
@@ -87,8 +88,12 @@ public class AutenticacionEndpoint implements Serializable {
                                 .build()
                 );
                 if (resultado.isSuccess()) {
-                    sesion.setAttribute("usuario", nombreUsuario);
-                    // aumentar contador de uso de credencial?
+                    sesion.setAttribute("usuario", nombreUsuario); // guardar en sesion
+                    Usuario u = uBean.findByUsuario(nombreUsuario);
+                    Autenticador aut = aBean.findByUsuario(u, 0, 10000).get(0);
+                    aut.setCuenta(aut.getCuenta() + 1l); // aumentar la cuenta de uso
+                    aBean.modificar(aut);
+
                     // enviar a bienvenida 
                     URI uri = info.getBaseUriBuilder().path("../registrado.jsf").build();
                     return Response.status(303).location(uri).build();

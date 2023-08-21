@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
-        <title>WebAuthn Example</title>
+        <title>Iniciar Sesión - WebAuthn</title>
         <link href="./css/tachyons.css" rel="stylesheet" />
     </head>
     <body class="black-80">
@@ -10,7 +10,7 @@
         <div class="db fw6 lh-copy f6 measure center">
             <div id="error"></div>
             <form action="/welcome" method="POST" id="form">
-                <legend class="f2 f1-l fw2 mb0 lh-title">Ingresar</legend>
+                <legend class="f2 f1-l fw2 mb0 lh-title">Iniciar Sesión</legend>
                 <label class="db fw6 lh-copy f6" for="username">Usuario:</label>
                 <input class="pa2 input-reset ba bg-transparent hover-bg-purple hover-white w-100" type="text" id="username" name="username">
                 <input type="hidden" id="credential" name="credential">

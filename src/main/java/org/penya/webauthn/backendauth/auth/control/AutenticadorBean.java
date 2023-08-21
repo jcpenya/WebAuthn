@@ -39,6 +39,16 @@ public class AutenticadorBean implements Serializable {
         throw new IllegalArgumentException();
     }
 
+    public Autenticador modificar(Autenticador a) {
+        if (a != null) {
+            if (em != null) {
+                return em.merge(a);
+            }
+            throw new IllegalStateException();
+        }
+        throw new IllegalArgumentException();
+    }
+
     public List<Autenticador> findByIdentificadorCredencial(ByteArray identificadorCredencial, int first, int pageSize) {
         if (identificadorCredencial != null) {
             if (em != null) {

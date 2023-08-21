@@ -52,11 +52,34 @@ public class Usuario implements Serializable {
     @NotBlank
     private String nombre;
 
+    @Basic(optional = false)
+    @Column(name = "dispositivo", nullable = false, length = 255)
+    @Size(min = 3, max = 255)
+    @NotBlank
+    private String dispositivo;
+
+    @Basic(optional = false)
+    @Column(name = "marca", nullable = false, length = 255)
+    @Size(min = 3, max = 255)
+    @NotBlank
+    private String marca;
+
+    @Basic(optional = true)
+    @Column(name = "modelo", nullable = true, length = 255)
+    @Size(max = 255)
+    private String modelo;
+
+    @Basic(optional = false)
+    @Column(name = "user_agent", nullable = false, length = 255)
+    @Size(min = 3, max = 255)
+    @NotBlank
+    private String userAgent;
+
     @Lob
     @Column(name = "handle", nullable = false, length = 64)
     private ByteArray handle;
 
-    @OneToMany(mappedBy = "idUsuario",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "idUsuario", fetch = FetchType.EAGER)
     private List<Autenticador> autenticadorList;
 
     public Usuario() {
@@ -99,6 +122,40 @@ public class Usuario implements Serializable {
     public void setHandle(ByteArray handle) {
         this.handle = handle;
     }
+
+    public String getDispositivo() {
+        return dispositivo;
+    }
+
+    public void setDispositivo(String dispositivo) {
+        this.dispositivo = dispositivo;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+    
+    
 
     public UserIdentity toUserIdentity() {
         return UserIdentity.builder()

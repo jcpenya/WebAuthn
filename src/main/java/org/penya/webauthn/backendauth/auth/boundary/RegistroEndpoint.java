@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -61,10 +62,11 @@ public class RegistroEndpoint implements Serializable {
     public Response registroNuevoUsuario(@PathParam(value = "usuario") final String usuario,
             @PathParam(value = "nombre")
             final String nombre,
+            @FormParam("dispositivo") final String dispositivo,
+            @FormParam("marca") final String marca,
+            @FormParam("modelo") final String modelo,
+            @HeaderParam("user-agent") final String userAgent,
             @Context HttpServletRequest request) {
-
-//newUserRegistration https://developer.okta.com/blog/2022/04/26/webauthn-java#authentication-controllers
-        HttpSession sesion = request.getSession();
         Usuario existe = uBean.findByUsuario(usuario);
         if (existe == null) { // el usuario no existe, se procede a crearlo
             byte[] bytes = new byte[32];
@@ -78,6 +80,10 @@ public class RegistroEndpoint implements Serializable {
                     .id(id)
                     .build();
             Usuario nuevo = new Usuario(userIdentity);
+            nuevo.setDispositivo(dispositivo);
+            nuevo.setMarca(marca);
+            nuevo.setModelo(modelo);
+            nuevo.setUserAgent(userAgent);
             uBean.guardar(nuevo);
             return registroNuevaAutenticacion(nuevo, request);
         }
