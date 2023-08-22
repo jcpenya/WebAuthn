@@ -1,33 +1,409 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Start Page</title>
+        <title>Prototipo - WebAuthn</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style>
+            .nav {
+                position: relative;
+                padding: 1em;
+            }
+
+            .nav__pointer {
+                z-index: 1;
+                position: absolute;
+                top: 0.6em;
+                left: 1em;
+                background-color: #bada55;
+                height: 1.8em;
+                transition: transform 0.25s ease-in-out;
+                border-radius: 0.3em;
+                will-change: transform;
+                backface-visibility: hidden;
+            }
+
+            .nav__list {
+                position: relative;
+                z-index: 2;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+
+            /* Decoration styles */
+
+            body, html {
+                height: 100vh;
+                min-height: 320px;
+                box-sizing: border-box;
+            }
+
+            *,*:before,*:after {
+                box-sizing: inherit;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                padding: 1em;
+                margin: 0;
+                background: #e1e1e1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            nav {
+                text-align: center;
+                width: 420px;
+                margin: 0 auto;
+                background: #f5f5f5;
+                display: block;
+            }
+
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+
+            .nav__list > li > a {
+                text-decoration: none;
+                font-weight: 600;
+                user-select: none;
+            }
+
+            .nav__list > li > a,
+            .nav__list > li > a:visited {
+                color: #1d1d1d;
+            }
+            h1{
+                margin: 0;
+                padding: 0;
+                text-align: center;
+            }
+
+            .collapsible {
+                background-color: #eee;
+                color: #444;
+                cursor: pointer;
+                padding: 18px;
+                width: 100%;
+                border: none;
+                text-align: left;
+                outline: none;
+                font-size: 15px;
+            }
+
+            .active, .collapsible:hover {
+                background-color: #ccc;
+            }
+
+            .content {
+                padding: 0 18px;
+                display: none;
+                overflow: hidden;
+                background-color: #f1f1f1;
+            }
+
+
+            .caja > a:link, caja > a:visited {
+                background-color: white;
+                color: black;
+                border: 2px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+            }
+
+            .caja > a:hover, .caja > a:active {
+                background-color: green;
+                color: white;
+            }
+
+
+        </style>
     </head>
     <body>
-        <h1>Hello World!</h1>
-        
-                
-        bienvenido
-        
-        gracias por participar
-        
-        
-        
-       paso 0 conocer sobre webauthn
-       
-       paso 1 acerca del experimento
-        te pediremos registrarte. para ello la siguiente informacion
-        te pediremos autenticarte
-        
-       paso 2 probar registrarme
-        necesitas pagina de bloqueo
-        <a href="./registro.html">Registrarme</a>
-        
-        
-        
-        
-        paso 3 probar autenticarme
-        <a href="./login.html">Autenticarme</a>
+        <nav class="nav" id="js-nav">
+            <div id="js-pointer" class="nav__pointer"></div>
+            <ul class="nav__list">
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Acerca</a></li>
+                <li><a href="#">Registro</a></li>
+                <li><a href="#">Autenticar</a></li>
+            </ul>
+        </nav>
+        <div id="escenario">
+            <h1>
+                Inicio
+            </h1>
+            <p>
+                Gracias por su voluntad en participar en la prueba de este prototipo. 
+                En los enlaces al principio de la pagina se muestran los pasos para trabajar en esta prueba de concepto, los cuales pueden resumirse como
+            </p>
+            <ul>
+                <li><strong>Inicio</strong>: Esta página de información general.</li> 
+                <li><strong>Acerca:</strong> Por si tiene cuiriosidad, explica de forma sencilla que es WebAuthn, el estándar para autenticación sin contraseñas.</li>
+                <li><strong>Registro:</strong> Indicaciones para el <u>primer paso</u> de la prueba de concepto.</li>
+                <li><strong>Autenticar:</strong> Indicaciones para el <u>segundo paso</u> de la prueba de concepto.</li>
+            </ul>
+        </div>
+
+
+
+        <script>
+
+
+            var CONTAINER_PADDING_HALF = "0.5em";
+
+            var nav = document.getElementById("js-nav");
+            var pointer = document.getElementById("js-pointer");
+            var links = nav.getElementsByTagName("a");
+
+            pointer.style.width = "calc(100% /" + links.length + " - " + CONTAINER_PADDING_HALF + ")";
+
+            for (var i = 0; i < links.length; i++) {
+                var current = links[i];
+                current.dataset.order = i * 100 + "%";
+                current.addEventListener("click", movePointer);
+            }
+
+
+            function movePointer(e) {
+                var coll = document.getElementsByClassName("collapsible");
+                var i;
+
+                for (i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function () {
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+
+
+
+                var order = e.currentTarget.dataset.order;
+                let escenario = document.getElementById("escenario");
+                if (order === '0%') {
+                    escenario.innerHTML = inicio();
+                } else if (order === "100%") {
+                    escenario.innerHTML = acerca();
+                } else if (order === "200%") {
+                    escenario.innerHTML = registro();
+                } else if (order === "300%") {
+                    escenario.innerHTML = autenticar();
+                }
+                pointer.style.transform = "translate3d(" + order + ",0,0)";
+
+
+
+                var coll = document.getElementsByClassName("collapsible");
+                var i;
+
+                for (i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function () {
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            }
+
+            function inicio() {
+                return `
+               <h1>
+                Inicio
+            </h1>
+            <p>
+                Gracias por su voluntad en participar en la prueba de este prototipo. 
+                En los enlaces al principio de la pagina se muestran los pasos para trabajar en esta prueba de concepto, los cuales pueden resumirse como
+            </p>
+            <ul>
+                <li><strong>Inicio</strong>: Esta página de información general.</li> 
+                <li><strong>Acerca:</strong> Por si tiene cuiriosidad, explica de forma sencilla que es WebAuthn, el estándar para autenticación sin contraseñas.</li>
+                <li><strong>Registro:</strong> Indicaciones para el <u>primer paso</u> de la prueba de concepto.</li>
+                <li><strong>Autenticar:</strong> Indicaciones para el <u>segundo paso</u> de la prueba de concepto.</li>
+            </ul>
+        `;
+            }
+
+            function acerca() {
+                return `
+                <h1>Acerca de WebAuthn</h1>
+        <p>
+                Webauthn es un estándar relativamente nuevo de la W3C, que permite autenticación estandarizada y segura en el web, y que está soportada por los mayores navegadores y plataformas del mercado. Los primeros componentes fueron implementados en Gmail en 2014, y en 2019 se crea el estándar respaldado por Google, Microsoft y otros grandes nombres en el mercado.
+            </p>
+            <p>
+                La autenticación propuesta por WebAuthn utiliza criptografía de clave pública para registrar y gestionar dispositivos y cuentas con servidores. 
+                Cuando se registra un dispositivo con una aplicación o sistema, que suele conocerse como Parte Delegada, se le pedirá al navegador que genere una credencial. El sistema entonces indicará el método deseado (por ejemplo una huella digital, reconocimiento facial, un patrón, etc.) basándose en las capacidades del dispositivo y la aprobación del usuario final. Cuando el usuario concede dicha aprobación, se generan un par de claves, una  privada que se asigna al usuario  y una pública que se envía al servidor web para que sea almacenada, y sirve para relacionarla con la identidad del usuario.
+            </p>
+            <p>
+                El primer esbozo para Webauthn surgió por la creación de Fido Alliance en 2012 con el único propósito de generar un mecanismo de autenticación que no utilizase contraseñas, trabajo que empezó en 2014 con el desarrollo del framework FIDO. Se obtuvieron tan buenos resultados que la versión 2 de FIDO dio paso a la creación del estándar Webauthn. 
+
+            </p>`;
+            }
+
+            function registro() {
+                return `
+                 <h1>
+                Registro
+            </h1>
+            <h2>Pantalla de bloqueo</h2>
+            <p>
+                El primer paso simula la creación de una cuenta en un sitio web, pero en lugar de una contraseña se pedirá a su navegador que utilice un "gesto" de autenticación, que dependiendo de su dispositivo puede ser un patrón de bloqueo, su huella digital, identificación facial, etc.
+                <strong>EL GESTO NUNCA SALE DE SU DISPOSITIVO!</strong> El estándar crea certificados de seguridad y los bloquea con el gesto, y solo pueden usarse si usted lo autoriza repitiendo el gesto para desbloquearlos.
+            </p>
+            <p>
+                Como imaginará, antes de iniciar debe habilitar algun bloqueo mediante algún gesto en su dispositivo.
+                Si desea ayuda acerca del proceso para Android, haga clic en cada tema:
+            </p>
+            <div>
+                <button type="button" class="collapsible">Acceda a la configuracion de su dispositivo</button>
+                <div class="content">
+                    <img src="./images/pantallaBloqueoAndroid13_01configuraciones_back.gif" loading="lazy" alt="Acceso a configuracion android"/>
+                </div> 
+                <button type="button" class="collapsible">Agregue un bloqueo de pantalla</button>
+                <div class="content">
+                    <img src="./images/pantallaBloqueoAndroid13_02bloqueo_back.gif" loading="lazy" alt="Configuracion de bloqueo"/>
+                </div>
+                <button type="button" class="collapsible">Configure una huella dactilar</button>
+                <div class="content">
+                    <img src="./images/pantallaBloqueoAndroid13_03huella_back.gif" loading="lazy" alt="Huella dactilar"/>
+                </div>
+                <button type="button" class="collapsible">Como agregar bloqueo en Android</button>
+                <div class="content">
+                    <img src="./images/pantallaBloqueoAndroid13_04desbloqueo_back.gif" loading="lazy" alt="Desbloqueo"/>
+                </div>
+            </div>
+            <h2>Registro</h2>
+            <p>
+                Ahora siga el proceso para crear una cuenta de usuario. Si desea saber que informacion es requerida puede hacer clic en el siguiente boton:
+            </p>
+        <button type="button" class="collapsible">Que informacion se solicita</button>
+                <div class="content">
+                   <table>
+                <thead>
+
+                    <tr>
+                        <td>Informacion</td>
+                        <td>Descripcion</td>
+                        <td>Uso</td>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Nombre de Usuario
+                        </td>
+                        <td>
+                            Identificador unico de su usuario
+                        </td>
+                        <td>
+                            Permite que su usuario sea unico e irrepetible en la aplicacion.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Nombre Propio
+                        </td>
+                        <td>
+                            Su primer nombre
+                        </td>
+                        <td>
+                            Este nombre permite personalizar un saludo una vez se cree el usuario.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Nombre de credencial
+                        </td>
+                        <td>
+                            Nombre para identificar a su dispositivo
+                        </td>
+                        <td>
+                            Le permite al usuario identificar el origen de su autenticacion. Imagine se autentica desde una computadora y su telefono, el nombre le ayuda a distinguir cada credencial
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Dipositivo
+                        </td>
+                        <td>
+                            Telefono o Computadora
+                        </td>
+                        <td>
+                            Facilitara el analisis de datos y poder inferir si hay incidencias en los resultados dependiendo del tipo de dispositivo usado
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Marca
+                        </td>
+                        <td>
+                            Marca o fabricante del dispositivo usado
+                        </td>
+                        <td>
+                            Facilitara el analisis de datos y poder inferir si hay incidencias en los resultados dependiendo de la marca del dispositivo usado
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Modelo
+                        </td>
+                        <td>
+                            Modelo del dispositivo usado. Este campo no es obligatorio.
+                        </td>
+                        <td>
+                            Facilitara el analisis de datos y poder inferir si hay incidencias en los resultados dependiendo de la marca del dispositivo usado
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+                </div> 
+           
+            <p>
+                Si esta listo para iniciar el registro, puede hacer clic en el siguiente enlace
+            </p>
+            <p class="caja">
+
+                <a  id="caja" href="./registro.html">Iniciar Registro</a>
+
+            </p>
+            <p>
+                Cuando finalice el proceso de registro, se mostrara la informacion que ha brindado, asi como la opcion para cerrar sesion. Si quiere comprobar el funcionamiento
+                completo de Webauthn, cierre sesion, y realice el ultimo paso del prototipo que aborda la autenticacion.
+            </p>
+        `;
+
+            }
+
+            function autenticar() {
+                return `<h1>
+                Autenticar
+            </h1>
+            <p>
+                El ultimo paso para la prueba del prototipo es iniciar sesion con su usuario recien registrado.
+                Ingrese al siguiente enlace, provea su usuario y repita el gesto utilizado previamente para ingresar.
+            </p>
+            <p class="caja">
+
+                <a  id="caja" href="./login.html">Iniciar Autenticacion</a>
+
+            </p>`;
+            }
+        </script>
     </body>
 </html>
