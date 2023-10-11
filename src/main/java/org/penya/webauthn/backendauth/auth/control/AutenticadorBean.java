@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.penya.webauthn.backendauth.auth.control;
 
 import com.yubico.webauthn.data.ByteArray;
@@ -18,6 +14,9 @@ import org.penya.webauthn.backendauth.auth.entity.Autenticador;
 import org.penya.webauthn.backendauth.auth.entity.Usuario;
 
 /**
+ * Reglas de negocio para Gestion de Credenciales de un usuario. Provee los
+ * mecanismos de acceso a datos y logica CRUD para las credenciales WebAuthn de
+ * un usuario.
  *
  * @author jcpenya
  */
@@ -28,6 +27,12 @@ public class AutenticadorBean implements Serializable {
     @PersistenceContext(unitName = "BackendAuth-PU")
     EntityManager em;
 
+    /**
+     * Guarda en el repositorio una nueva credencial
+     *
+     * @param a Credencial a almacenar
+     * @see Autenticador
+     */
     public void guardar(Autenticador a) {
         if (a != null) {
             if (em != null) {
@@ -39,6 +44,12 @@ public class AutenticadorBean implements Serializable {
         throw new IllegalArgumentException();
     }
 
+    /**
+     * Modifica una credencial almacenada en el repositorio
+     *
+     * @param a Credencial a modificar
+     * @return La credencial modificada
+     */
     public Autenticador modificar(Autenticador a) {
         if (a != null) {
             if (em != null) {
@@ -49,6 +60,16 @@ public class AutenticadorBean implements Serializable {
         throw new IllegalArgumentException();
     }
 
+    /**
+     * Busca una credencial en base a su identificador unico para el estandar
+     * WebAuthn
+     *
+     * @param identificadorCredencial Identificador unico para el estandar
+     * WebAuthn
+     * @param first primer registro a obtener
+     * @param pageSize cantidad de registros a obtener
+     * @return Lista de credenciales asociadas al identificador.
+     */
     public List<Autenticador> findByIdentificadorCredencial(ByteArray identificadorCredencial, int first, int pageSize) {
         if (identificadorCredencial != null) {
             if (em != null) {
@@ -69,6 +90,14 @@ public class AutenticadorBean implements Serializable {
 
     }
 
+    /**
+     * Busca en el repositorio las credenciales asociadas al usuario.
+     *
+     * @param u Usuario al que pertenecen las credenciales
+     * @param first primer registro a obtener
+     * @param pageSize cantidad de registros a obtener
+     * @return Lista de credenciales asociadas al usuario
+     */
     public List<Autenticador> findByUsuario(Usuario u, int first, int pageSize) {
         if (em != null) {
             try {

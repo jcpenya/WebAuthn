@@ -1,7 +1,11 @@
-async function checkCredentials() {
+/**
+ * Valida las credenciales del usuario mediante WebAuthn
+ * @returns void Muestra un error si existiese o navega al URL provisto si la autenticación funciona
+ */
+async function checkCredentials() { // Autenticara al usuario
     this.form = document.getElementById("form");
     const formData = new FormData(form);
-    fetch('/BackendAuth/resources/autenticacion/' + formData.get("username"), {
+    fetch('/BackendAuth/resources/autenticacion/' + formData.get("username"), {// Obtiene un challenge del servidor para el usuario.
         method: 'GET'
     })
             .then(response => initialCheckStatus(response))
@@ -18,7 +22,7 @@ async function checkCredentials() {
                     },
                 }))
             .then(credentialGetOptions =>
-                navigator.credentials.get(credentialGetOptions))
+                navigator.credentials.get(credentialGetOptions)) // en base al challenge, obtiene la clave privada del navegador.
             .then(publicKeyCredential => ({
                     type: publicKeyCredential.type,
                     id: publicKeyCredential.id,
@@ -30,9 +34,9 @@ async function checkCredentials() {
                     },
                     clientExtensionResults: publicKeyCredential.getClientExtensionResults(),
                 }))
-            .then((encodedResult) => {
+            .then((encodedResult) => { // intenta autenticar con el desafio generado
                 document.getElementById("credential").value = JSON.stringify(encodedResult);
-                this.form.action = '/BackendAuth/resources/autenticacion/' + formData.get("username")           ;
+                this.form.action = '/BackendAuth/resources/autenticacion/' + formData.get("username");
                 this.form.submit();
             })
             .catch(error => displayError(error))

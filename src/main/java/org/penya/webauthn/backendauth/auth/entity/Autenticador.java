@@ -5,7 +5,6 @@ import com.yubico.webauthn.data.AttestedCredentialData;
 import com.yubico.webauthn.data.AuthenticatorAttestationResponse;
 import com.yubico.webauthn.data.ByteArray;
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +20,8 @@ import java.io.Serializable;
 import java.util.Optional;
 
 /**
+ * Entidad que provee el ORM para la tabla autenticador en el repositorio, por
+ * lo que representa las credenciales asociadas a un usuario
  *
  * @author jcpenya
  */
@@ -61,7 +62,7 @@ public class Autenticador implements Serializable {
     private String nombre;
 
     @Lob
-    @Column(nullable = false,name = "identificador_credencial")
+    @Column(nullable = false, name = "identificador_credencial")
     @Basic(optional = false)
     private ByteArray identificadorCredencial;
 
@@ -69,8 +70,6 @@ public class Autenticador implements Serializable {
     @Column(nullable = false, name = "clave_publica")
     @Basic(optional = false)
     private ByteArray clavePublica;
-
-   
 
     @Basic(optional = false)
     @Column(nullable = false, name = "cuenta")

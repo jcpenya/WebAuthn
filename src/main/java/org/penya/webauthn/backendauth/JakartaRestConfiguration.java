@@ -8,21 +8,22 @@ import org.eclipse.microprofile.openapi.annotations.info.Info;
 import org.eclipse.microprofile.openapi.annotations.servers.Server;
 
 /**
- * Configures Jakarta RESTful Web Services for the application.
+ * Configura la base de los recursos REST para la aplicación y define los
+ * parámetros para documentación Swagger
  *
- * @author Juneau
+ * @author jcpenya
  */
 @ApplicationPath("resources")
 @OpenAPIDefinition(info = @Info(
-        title = "Example application",
+        title = "BackendAuth - Prototipo de Autenticación WebAuthn",
         version = "1.0.0",
         contact = @Contact(
-                name = "Phillip Kruger",
-                email = "phillip.kruger@phillip-kruger.com",
-                url = "http://www.phillip-kruger.com")
+                name = "jcpenya",
+                email = "jcpenya@gmail.com",
+                url = "http://www.penya.org")
 ),
         servers = {
-            @Server(url = "/example", description = "localhost")
+            @Server(url = "/BackendAuth", description = "www.penya.org")
         }
 )
 public class JakartaRestConfiguration extends Application {

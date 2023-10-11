@@ -1,3 +1,8 @@
+// ==================== Ceremonia de Registro ===================== //
+/**
+ * Realiza el registro de credenciales mediante WebAuthn
+ * @type type
+ */
 document.addEventListener("submit", (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -7,12 +12,12 @@ document.addEventListener("submit", (e) => {
         datos.append(pair[0], pair[1]);
     }
 
-    fetch('/BackendAuth/resources/registro/' + formData.get('username') + '/' + formData.get('display'), {
+    fetch('/BackendAuth/resources/registro/' + formData.get('username') + '/' + formData.get('display'), { // Obtiene los parametros para crear el registro.
         method: 'POST',
         body: datos
     })
             .then(response => initialCheckStatus(response))
-            .then(credentialCreateJson => ({
+            .then(credentialCreateJson => ({// crea la clave publica y los detalles del usuario.
                     publicKey: {
                         ...credentialCreateJson.publicKey,
                         challenge: base64urlToUint8array(credentialCreateJson.publicKey.challenge),
@@ -28,7 +33,7 @@ document.addEventListener("submit", (e) => {
                     },
                 }))
             .then(credentialCreateOptions =>
-                navigator.credentials.create(credentialCreateOptions))
+                navigator.credentials.create(credentialCreateOptions))// genera la clave privada en el navegador
             .then(publicKeyCredential => ({
                     type: publicKeyCredential.type,
                     id: publicKeyCredential.id,
@@ -39,7 +44,7 @@ document.addEventListener("submit", (e) => {
                     },
                     clientExtensionResults: publicKeyCredential.getClientExtensionResults(),
                 }))
-            .then((encodedResult) => {
+            .then((encodedResult) => { // generado el par de claves, envia la clave publica al servidor
                 const form = document.getElementById("form");
                 const formData = new FormData(form);
                 formData.append("credential", JSON.stringify(encodedResult));
@@ -54,7 +59,7 @@ document.addEventListener("submit", (e) => {
                 });
             })
             .then((response) => {
-                followRedirect(response);
+                followRedirect(response); // Si se obtiene un estatus positivo se sigue el URL provisto
             })
             .catch((error) => {
                 displayError(error);

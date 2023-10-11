@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.penya.webauthn.backendauth.auth.control;
 
 import com.yubico.webauthn.RelyingParty;
@@ -15,6 +11,8 @@ import java.util.HashSet;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
+ * Instancia un unico RelyingParty para toda la aplicacion y brinda mecanismos
+ * para acceder a el
  *
  * @author jcpenya
  */
@@ -36,9 +34,15 @@ public class RelyingPartySupplier implements Serializable {
 
     @Inject
     RepositorioCredenciales repositorioCredenciales;
-
+    /**
+     * RelyingParty para autenticacion WebAuthn
+     */
     RelyingParty relyingParty;
 
+    /**
+     * Iicializa el RelyingParty indicando cual es el Repositorio de
+     * Credenciales y nombres del servidore.
+     */
     @PostConstruct
     public void inicializar() {
         RelyingPartyIdentity identity = RelyingPartyIdentity.builder().id(nombreHost)

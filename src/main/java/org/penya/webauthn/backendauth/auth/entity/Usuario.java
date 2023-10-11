@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * Entidad que provee el ORM para la tabla usuario en el repositorio, por lo que
+ * representa los usuarios de la aplicacion
  *
  * @author jcpenya
  */
@@ -154,8 +156,6 @@ public class Usuario implements Serializable {
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
     }
-    
-    
 
     public UserIdentity toUserIdentity() {
         return UserIdentity.builder()
