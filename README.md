@@ -25,9 +25,9 @@ para que coincidan con el dominio y certificado de seguridad utilizado, de lo co
 ![Error de dominio Webauthn](https://www.penya.org/error_dominio_webauthn.jpg)
 ## Compilacion
 Luego de obtener una copia del repositorio, puede compilarse mediante Maven, estando dentro del directorio que contiene al archivo pom.xml, mediante el comando:  
-  
-*$ mvn clean package*  
-  
+```  
+$ mvn clean package  
+```  
 Esto generara un archivo WAR dentro del directorio target. Este archivo es el artefacto que deberá desplegarse en un sevidor de aplicaciones Jakarta Enterprise 10
 ## Despliegue
 Durante el desarrollo se utilizó como servidor de aplicaciones Payara Community Edition 6.2023.6, por lo que las instrucciones a continuación aplican a dicho servidor.  
@@ -61,7 +61,7 @@ El despliegue supone tener instalado JDK 17 (La versión LTS al momento de desar
 ### Mediante Docker
 Dentro de este repositorio se incluye un archivo Dockerfile con el siguiente contenido:
 ```  
-*FROM payara/server-full:6.2023.6-jdk17  
+FROM payara/server-full:6.2023.6-jdk17  
 USER root  
 RUN apt update && apt install -y wget  
 USER payara  
@@ -69,14 +69,14 @@ RUN wget -O $PAYARA_DIR/glassfish/lib/postgresql.jar https://jdbc.postgresql.org
 RUN echo 'create-jdbc-connection-pool --datasourceclassname org.postgresql.ds.PGSimpleDataSource --restype javax.sql.DataSource --property user="${ENV=POSTGRES_USER}":password="${ENV=POSTGRES_PASSWORD}":servername=db:portnumber="${ENV=POSTGRES_PORT}":databasename="${ENV=POSTGRES_DBNAME}"  pg_db' >> $CONFIG_DIR/pre-boot-commands.asadmin \  
    	 && echo 'create-jdbc-resource --connectionpoolid pg_db jdbc/webauthn' >> $CONFIG_DIR/pre-boot-commands.asadmin  
 RUN echo 'deploy /opt/payara/aplicacion.war' >> $CONFIG_DIR/post-boot-commands.asadmin \  
-    && echo 'ping-connection-pool pg_db' >> $CONFIG_DIR/post-boot-commands.asadmin*    
+    && echo 'ping-connection-pool pg_db' >> $CONFIG_DIR/post-boot-commands.asadmin    
 ```  
 El siguiente paso es crear una imagen, y puede crearla usando el siguiente comando  
-  
-*$ docker build -t payara/full_pg:6.2023.6 ./*  
-
+```  
+$ docker build -t payara/full_pg:6.2023.6 ./
+```
 Ahora necesitará alguna información para lanzar el contenedor. Primero son las mismas variables de entorno y dirección IP para el servidor de bases de datos. Además la ruta a donde se encuentra el artefacto generado, expresado de forma relativa. Con esta información a mano puede lanzarse el contenedor:
-  
-*$ docker run --rm -p 8080:8080 --name payara -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=contraseniapostgres -e POSTGRES_DBNAME=webauthn -e POSTGRES_PORT=5432 --add-host=db:192.168.1.4 -v ~/webauthn/target/BackendAuth-1.0-SNAPSHOT.war:/opt/payara/aplicacion.war  payara/full_pg:6.2023.6*
-  
+```  
+$ docker run --rm -p 8080:8080 --name payara -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=contraseniapostgres -e POSTGRES_DBNAME=webauthn -e POSTGRES_PORT=5432 --add-host=db:192.168.1.4 -v ~/webauthn/target/BackendAuth-1.0-SNAPSHOT.war:/opt/payara/aplicacion.war  payara/full_pg:6.2023.6
+```  
 
